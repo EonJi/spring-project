@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Data
@@ -14,8 +16,11 @@ public class Board {
     @Id // id가 pk라는 것을 알려주기 위한 어노테이션
     @GeneratedValue(strategy = GenerationType.IDENTITY) //auto-increment
     private Long id;
+    @NotNull
+    @Size(min=2, max=30, message = "제목은 2자 이상 30자 이하로 입력해주세요")
     private String title;
     private String content;
+    // Annotation만으로 validation처리를 하면 편리하긴 하지만 자유도에 제약이 있다
 }
 
 
