@@ -24,11 +24,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers("/", "/home").permitAll()
+                    .antMatchers("/", "/css/**").permitAll()
                     .anyRequest().authenticated()
                     .and()
                 .formLogin()
-                    .loginPage("/login")
+                    .loginPage("/account/login")
                     .permitAll()
                     .and()
                 .logout()
@@ -40,12 +40,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.jdbcAuthentication()
           .dataSource(dataSource)
           .passwordEncoder(passwordEncoder())
-          .usersByUsernameQuery("select username,password,enabled "
-            + "from user "
-            + "where username = ?") // Authentication
-          .authoritiesByUsernameQuery("select username, name "
-            + "from authorities "
-            + "where email = ?"); // Authorization
+                .usersByUsernameQuery("select username, password, enabled "
+                        + "from user "
+                        + "where username = ?") // authentication
+                .authoritiesByUsernameQuery("select u.username, r.name "
+                        + "from user_role ur inner join user u on ur.user_id = u.id "
+                        + "inner join role r on ur.role_id = r.id "
+                        + "where u.username = ?"); // authorization
     }
     // Authentication : 로그인
     // Authorization : 권한
