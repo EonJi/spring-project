@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <head th:fragment="head(title)">
         <!-- Required meta tags -->
         <meta charset="utf-8" />
@@ -49,6 +49,18 @@
                         </a>
                     </li>
                 </ul>
+                <!-- 로그인/로그아웃 에 따라 분기처리 해주기, 특정 권한이 있는 사용자한테는 표시해주는 방식으로,, -->
+                <!-- mr-2 오른쪽 마진 -->
+                <a class="btn btn-secondary my-2 mr-2 my-sm-0" th:href="@{/account/login}" sec:authorize="!isAuthenticated()">로그인</a>
+                <!-- 로그인 되지 않은 사용자만 로그인 버튼 볼 수 있다 -->
+                <a class="btn btn-secondary my-2 my-sm-0" th:href="@{/account/register}" sec:authorize="!isAuthenticated()">회원가입</a>
+                <!-- 로그인된 사용자만 form을 볼 수 있다 -->
+                <form c lass="form-inline my-2 my-lg-0" th:action="@{/logout}" method="POST" sec:authorize="isAuthenticated()">
+                    <span class="text-white" sec:authentication="name">사용자</span>
+                    <span class="text-white mx-2" sec:authentication="principal.authorities">권한</span>
+                    <!-- mx-2 좌우 마진을 2로 준다 -->
+                    <button class="btn btn-secondary my-2 my-sm-0" type="submit">Logout</button>
+                </form>
             </div>
         </nav>
     </body>
