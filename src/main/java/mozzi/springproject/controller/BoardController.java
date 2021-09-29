@@ -2,12 +2,15 @@ package mozzi.springproject.controller;
 
 import mozzi.springproject.model.Board;
 import mozzi.springproject.repository.BoardRepository;
+import mozzi.springproject.service.BoardService;
 import mozzi.springproject.validator.BoardValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,6 +25,9 @@ public class BoardController {
 
     @Autowired // dependency injection
     private BoardRepository boardRepository; //interface 추가
+
+    @Autowired
+    private BoardService boardService;
 
     @Autowired
     private BoardValidator boardValidator;
@@ -50,12 +56,16 @@ public class BoardController {
     }
 
     @PostMapping("/form")
-    public String boardSubmit(@Valid Board board, BindingResult bindingResult){
+    public String boardSubmit(@Valid Board board, BindingResult bindingResult, Authentication authentication){
         boardValidator.validate(board, bindingResult);
         if(bindingResult.hasErrors()){
             return "board/form";
         }
-        boardRepository.save(board);
+        // Authentication a = SecurityContextHolder.getContext().getAuthentication();
+        // 서비스 클래스나 컨트롤러 외에 스프링에서 관리해주는 클래스에서 인증정보 가지고 오고 싶은 경우
+        String username = authentication.getName(); // Authentication을 컨트롤러 파라메터에 담아서 getName()해도 됨 (사용자 정보를 가져온다)
+        boardService.save(username, board);
+//        boardRepository.save(board);
         return "redirect:/board/list";
     }
 

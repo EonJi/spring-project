@@ -1,5 +1,6 @@
 package mozzi.springproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -23,5 +24,9 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles = new ArrayList<>();
+
+    // 사용자입장에서 게시글을 가져올때 : OneToMany
+    @OneToMany(mappedBy="user", cascade = CascadeType.ALL, orphanRemoval = true) // 양방향 매핑
+    private List<Board> boards = new ArrayList<>();
 
 }

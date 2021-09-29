@@ -14,6 +14,7 @@ class BoardApiController {
     @Autowired
     private BoardRepository repository;
 
+    // 게시글 검색
     @GetMapping("/boards")
     List<Board> all(@RequestParam(required = false, defaultValue="") String title, @RequestParam(required = false, defaultValue="") String content) {
         if(StringUtils.isEmpty(title) && StringUtils.isEmpty(content)){
@@ -36,7 +37,7 @@ class BoardApiController {
     @PutMapping("/boards/{id}")
     Board replaceBoard(@RequestBody Board newBoard, @PathVariable Long id) {
         return repository.findById(id)
-                .map(board -> {
+                .map(board -> { // 새로운 값 세팅
                     board.setTitle(newBoard.getTitle());
                     board.setContent(newBoard.getContent());
                     return repository.save(board);
