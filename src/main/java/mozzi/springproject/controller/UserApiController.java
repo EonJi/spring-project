@@ -1,4 +1,5 @@
 package mozzi.springproject.controller;
+import lombok.extern.slf4j.Slf4j;
 import mozzi.springproject.model.Board;
 import mozzi.springproject.model.User;
 import mozzi.springproject.repository.UserRepository;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@Slf4j
 class UserApiController {
 
     @Autowired
@@ -17,7 +19,12 @@ class UserApiController {
 
     @GetMapping("/users")
     List<User> all() {
-        return repository.findAll();
+        List<User> users = repository.findAll();// get을 통해 데이터 조회
+        log.debug("getBoards().size() 호출 전");
+        log.debug("getBoards().size() : {}", users.get(0).getBoards().size()); // log찍어볼 수 있다
+//        users.get(0).getBoards().size(); // 첫번째 users에 getBoards()를 호출하게 되면, size()와 같은 함수 넣어주면 데이터 호출(첫번째 users에 해당하는 그 보드에 대한 정보를 가져온다)
+        log.debug("getBoards().size() 호출 후"); // log찍어볼 수 있다
+        return users;
     }
 
     @PostMapping("/users")
@@ -25,10 +32,10 @@ class UserApiController {
         return repository.save(newUser);
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/users/{id}") // id에 해당하는 사용자만 나온다
     User one(@PathVariable Long id) {
         return repository.findById(id).orElse(null);
-    }
+    } // 하나의 데이터만 가져온다
 
     @PutMapping("/users/{id}")
     User replaceUser(@RequestBody User newUser, @PathVariable Long id) {
