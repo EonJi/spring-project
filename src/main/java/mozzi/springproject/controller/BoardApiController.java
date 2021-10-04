@@ -2,6 +2,7 @@ package mozzi.springproject.controller;
 import mozzi.springproject.model.Board;
 import mozzi.springproject.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.util.StringUtils;
 
@@ -48,6 +49,7 @@ class BoardApiController {
                 });
     }
 
+    @Secured("ROLE_ADMIN") // 삭제 권한 처리(보안), ROLE_ADMIN만 게시글 삭제할 수 있다
     @DeleteMapping("/boards/{id}")
     void deleteBoard(@PathVariable Long id) {
         repository.deleteById(id);
